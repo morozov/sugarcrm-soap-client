@@ -1,0 +1,15 @@
+{
+  "name": "SugarCRM SOAP Client",
+  "description": "A convenience tool for accessing SugarCRM SOAP service via command line",
+  "authors": [
+    {
+      "name": "Sergei Morozov",
+      "email": "morozov@tut.by"
+    }
+  ],
+  "autoload": {
+    "psr-0": {
+      "SugarCRM": "src/"
+    }
+  }
+}
