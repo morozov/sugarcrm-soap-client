@@ -18,6 +18,7 @@ use SoapClient;
 use StdClass;
 use Exception;
 use SugarCRM\Soap\Client\Plugin\PluginInterface;
+use SugarCRM\Soap\Client\SessionStorage;
 
 /**
  * SugarCRM SOAP client
@@ -42,9 +43,9 @@ class Client
     protected $soapClient;
 
     /**
-     * @var string
+     * @var SessionStorage
      */
-    protected $sessionId;
+    protected $sessionStorage;
 
     /**
      * @var string
@@ -75,7 +76,7 @@ class Client
 
     /**
      * Set client options
-     * 
+     *
      * @param array $options Client options
      *
      * @return static
@@ -220,20 +221,29 @@ class Client
                 )
             );
 
-            // try to login to retrieve a session id
-            $result = $this->soapClient->login(
-                array(
-                    'user_name' => $this->username,
-                    'password'  => md5($this->password),
-                )
+            $sessionId = $this->getSessionStorage()->getSessionId(
+                $this->getConnectionKey()
             );
 
-            // process authentication error
-            if (self::ERROR_RESULT == $result->id) {
-                $this->error($result->error->description);
-            }
+            if (false === $sessionId) {
+                // try to login to retrieve a session id
+                $result = $this->soapClient->login(
+                    array(
+                        'user_name' => $this->username,
+                        'password'  => md5($this->password),
+                    )
+                );
 
-            $this->sessionId = $result->id;
+                // process authentication error
+                if (self::ERROR_RESULT == $result->id) {
+                    $this->error($result->error->description);
+                }
+
+                $this->getSessionStorage()->setSessionId(
+                    $this->getConnectionKey(),
+                    $result->id
+                );
+            }
         }
 
         return $this->soapClient;
@@ -249,7 +259,49 @@ class Client
     protected function setSoapClient(SoapClient $soapClient)
     {
         $this->soapClient = $soapClient;
+
         return $this;
+    }
+
+    /**
+     * Returns connection key
+     *
+     * @return string
+     */
+    protected function getConnectionKey()
+    {
+        $key = array($this->url, $this->username, $this->password);
+        $key = serialize($key);
+        $key = md5($key);
+        return $key;
+    }
+
+    /**
+     * Returns session ID storage
+     *
+     * @return SessionStorage
+     */
+    public function getSessionStorage()
+    {
+        if (!$this->sessionStorage) {
+            $this->sessionStorage = new SessionStorage\CacheLite();
+        }
+
+        return $this->sessionStorage;
+    }
+
+    /**
+     * Sets session ID storage
+     *
+     * @param SessionStorage $sessionStorage Session ID storage
+     *
+     * @return static
+     */
+    public function setSessionStorage(SessionStorage $sessionStorage)
+    {
+        $this->sessionStorage = $sessionStorage;
+
+        return $this->sessionStorage;
     }
 
     /**
@@ -339,7 +391,9 @@ class Client
 
         // perform SOAP function call
         $response = $soapClient->get_entry_list(
-            $this->sessionId,
+            $this->getSessionStorage()->getSessionId(
+                $this->getConnectionKey()
+            ),
             $module,
             $where,
             null,
