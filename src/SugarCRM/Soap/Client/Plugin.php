@@ -12,7 +12,7 @@
  * @license   http://mit-license.org/ MIT Licence
  * @link      http://github.com/morozov/sugarcrm-soap-client
  */
-namespace SugarCRM\Soap\Client\Plugin;
+namespace SugarCRM\Soap\Client;
 
 use SugarCRM\Soap\Client;
 
@@ -26,7 +26,7 @@ use SugarCRM\Soap\Client;
  * @license   http://mit-license.org/ MIT Licence
  * @link      http://github.com/morozov/sugarcrm-soap-client
  */
-interface PluginInterface
+interface Plugin
 {
     /**
      * Returns client

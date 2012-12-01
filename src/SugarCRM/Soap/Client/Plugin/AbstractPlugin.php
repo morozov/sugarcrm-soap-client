@@ -15,6 +15,7 @@
 namespace SugarCRM\Soap\Client\Plugin;
 
 use SugarCRM\Soap\Client;
+use SugarCRM\Soap\Client\Plugin;
 
 /**
  * SugarCRM SOAP client plugin
@@ -26,7 +27,7 @@ use SugarCRM\Soap\Client;
  * @license   http://mit-license.org/ MIT Licence
  * @link      http://github.com/morozov/sugarcrm-soap-client
  */
-class AbstractPlugin implements PluginInterface
+class AbstractPlugin implements Plugin
 {
     /**
      * @var Client
