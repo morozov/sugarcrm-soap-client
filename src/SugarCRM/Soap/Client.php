@@ -296,7 +296,7 @@ class Client
     {
         $this->sessionStorage = $sessionStorage;
 
-        return $this->sessionStorage;
+        return $this;
     }
 
     /**
