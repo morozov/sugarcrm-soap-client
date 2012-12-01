@@ -221,9 +221,7 @@ class Client
                 )
             );
 
-            $sessionId = $this->getSessionStorage()->getSessionId(
-                $this->getConnectionKey()
-            );
+            $sessionId = $this->getSessionId();
 
             if (false === $sessionId) {
                 // try to login to retrieve a session id
@@ -239,10 +237,7 @@ class Client
                     $this->error($result->error->description);
                 }
 
-                $this->getSessionStorage()->setSessionId(
-                    $this->getConnectionKey(),
-                    $result->id
-                );
+                $this->setSessionId($result->id);
             }
         }
 
@@ -302,6 +297,35 @@ class Client
         $this->sessionStorage = $sessionStorage;
 
         return $this->sessionStorage;
+    }
+
+    /**
+     * Returns session ID storage
+     *
+     * @return string|boolean Session ID or FALSE if session ID is not stored
+     */
+    public function getSessionId()
+    {
+        return $this->getSessionStorage()->getSessionId(
+            $this->getConnectionKey()
+        );
+    }
+
+    /**
+     * Sets session ID storage
+     *
+     * @param string $sessionId Session ID
+     *
+     * @return static
+     */
+    public function setSessionId($sessionId)
+    {
+        $this->getSessionStorage()->setSessionId(
+            $this->getConnectionKey(),
+            $sessionId
+        );
+
+        return $this;
     }
 
     /**
@@ -391,9 +415,7 @@ class Client
 
         // perform SOAP function call
         $response = $soapClient->get_entry_list(
-            $this->getSessionStorage()->getSessionId(
-                $this->getConnectionKey()
-            ),
+            $this->getSessionId(),
             $module,
             $where,
             null,
