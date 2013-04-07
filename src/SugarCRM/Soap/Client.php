@@ -225,12 +225,7 @@ class Client
 
             if (false === $sessionId) {
                 // try to login to retrieve a session id
-                $result = $this->soapClient->login(
-                    array(
-                        'user_name' => $this->username,
-                        'password'  => md5($this->password),
-                    )
-                );
+                $result = $this->login($this->username, $this->password);
 
                 // process authentication error
                 if (self::ERROR_RESULT == $result->id) {
