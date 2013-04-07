@@ -358,7 +358,7 @@ class Client
      */
     public function getEntry($module, $where, array $fields)
     {
-        $response = $this->getEntryList($module, $where, $fields, 1);
+        $response = $this->soapGetEntryList($module, $where, $fields, 1);
 
         $entry = array_shift($response->entry_list);
 
@@ -378,9 +378,9 @@ class Client
      *
      * @return array|null
      */
-    public function getEntries($module, $where, array $fields)
+    public function getEntryList($module, $where, array $fields)
     {
-        $response = $this->getEntryList($module, $where, $fields);
+        $response = $this->soapGetEntryList($module, $where, $fields);
 
         $result = $index = array();
         foreach ($response->entry_list as $entry) {
@@ -409,7 +409,7 @@ class Client
      * @internal
      * @return mixed
      */
-    protected function getEntryList($module, $where, $fields, $max_results = null)
+    protected function soapGetEntryList($module, $where, $fields, $max_results = null)
     {
         $soapClient = $this->getSoapClient();
 

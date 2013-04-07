@@ -27,7 +27,7 @@ class FindEmployees extends AbstractPlugin
                 function($row) {
                     return $row['name'];
                 },
-                $this->getClient()->getEntries(
+                $this->getClient()->getEntryList(
                     'Employees',
                     'first_name LIKE \'' . addslashes($pattern) . '%\' OR last_name LIKE \'' . addslashes($pattern) . '%\'',
                     array(
