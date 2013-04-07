@@ -43,7 +43,11 @@ try {
     $client = new SugarCRM\Soap\Client($options);
 
     try {
-        echo $client->call($method, $args), PHP_EOL;
+        $result = $client->call($method, $args);
+        if (!is_string($result)) {
+            $result = json_encode($result);
+        }
+        echo $result, PHP_EOL;
     } catch (BadFunctionCallException $e) {
         $signature = $client->getMethodSignature($method);
         echo 'Usage: ' . $self . ' ' . $command . ' ' . $signature, PHP_EOL;
