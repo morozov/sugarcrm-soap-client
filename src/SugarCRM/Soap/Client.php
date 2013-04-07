@@ -220,20 +220,6 @@ class Client
                     'trace'    => 1,
                 )
             );
-
-            $sessionId = $this->getSessionId();
-
-            if (false === $sessionId) {
-                // try to login to retrieve a session id
-                $result = $this->login($this->username, $this->password);
-
-                // process authentication error
-                if (self::ERROR_RESULT == $result->id) {
-                    $this->error($result->error->description);
-                }
-
-                $this->setSessionId($result->id);
-            }
         }
 
         return $this->soapClient;
@@ -295,15 +281,28 @@ class Client
     }
 
     /**
-     * Returns session ID storage
+     * Returns SOAP session ID
      *
-     * @return string|boolean Session ID or FALSE if session ID is not stored
+     * @return string Session ID
      */
     public function getSessionId()
     {
-        return $this->getSessionStorage()->getSessionId(
-            $this->getConnectionKey()
-        );
+        $sessionId = $this->getSessionStorage()
+            ->getSessionId(
+                $this->getConnectionKey()
+            );
+
+        if (false === $sessionId) {
+            $result = $this->login($this->username, $this->password);
+
+            if (self::ERROR_RESULT == $result->id) {
+                $this->error($result->error->description);
+            }
+
+            $this->setSessionId($result->id);
+        }
+
+        return $sessionId;
     }
 
     /**
