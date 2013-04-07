@@ -17,7 +17,7 @@ namespace SugarCRM\Soap;
 use SoapClient;
 use StdClass;
 use Exception;
-use SugarCRM\Soap\Client\Plugin\PluginInterface;
+use SugarCRM\Soap\Client\Plugin\AbstractPlugin;
 use SugarCRM\Soap\Client\SessionStorage;
 
 /**
@@ -563,7 +563,7 @@ class Client
      *
      * @param string $name Name of the plugin
      *
-     * @return PluginInterface
+     * @return AbstractPlugin
      * @throws \DomainException()
      * @throws \RuntimeException()
      */
@@ -574,7 +574,7 @@ class Client
             throw new \DomainException('Plugin "' . $name . '" not found');
         }
 
-        /** @var $plugin PluginInterface */
+        /** @var $plugin AbstractPlugin */
         $plugin = new $class();
         if (!method_exists($plugin, '__invoke')) {
             throw new \RuntimeException('Plugin "' . $name . '" is not callable');
@@ -636,7 +636,7 @@ class Client
     /**
      * Retrieve reflection of plugin's __invoke() method
      *
-     * @param PluginInterface $plugin Plugin object
+     * @param AbstractPlugin $plugin Plugin object
      *
      * @return \ReflectionMethod
      */
