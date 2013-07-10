@@ -50,10 +50,13 @@ try {
         echo $result, PHP_EOL;
     } catch (BadFunctionCallException $e) {
         $signature = $client->getMethodSignature($method);
-        echo 'Usage: ' . $self . ' ' . $command . ' ' . $signature, PHP_EOL;
+        file_put_contents(
+            'php://stderr',
+            'Usage: ' . $self . ' ' . $command . ' ' . $signature
+        );
         exit(1);
     }
 } catch (Exception $e) {
-    echo $e->getMessage(), PHP_EOL;
+    file_put_contents('php://stderr', $e->getMessage() . PHP_EOL);
     exit(1);
 }
