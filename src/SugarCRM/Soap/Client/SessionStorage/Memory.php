@@ -61,4 +61,18 @@ class Memory implements SessionStorage
 
         return $this;
     }
+
+    /**
+     * Unsets session ID for the specified connection
+     *
+     * @param string $connectionKey Connection key
+     *
+     * @return static
+     */
+    public function unsetSessionId($connectionKey)
+    {
+        unset($this->data[$connectionKey]);
+
+        return $this;
+    }
 }

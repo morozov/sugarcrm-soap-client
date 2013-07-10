@@ -19,6 +19,7 @@ use StdClass;
 use Exception;
 use SugarCRM\Soap\Client\Plugin\AbstractPlugin;
 use SugarCRM\Soap\Client\SessionStorage;
+use SugarCRM\Soap\Client\InvalidSessionException;
 
 /**
  * SugarCRM SOAP client
@@ -299,7 +300,8 @@ class Client
                 $this->error($result->error->description);
             }
 
-            $this->setSessionId($result->id);
+            $sessionId = $result->id;
+            $this->setSessionId($sessionId);
         }
 
         return $sessionId;
@@ -548,7 +550,19 @@ class Client
             throw new \BadFunctionCallException();
         }
 
-        /** @var callable $plugin */
+        try {
+            /** @var callable $plugin */
+            return call_user_func_array($plugin, $arguments);
+        } catch (\SoapFault $e) {
+            if ($e->getMessage() == 'Invalid Session ID') {
+                $this->getSessionStorage()->unsetSessionId(
+                    $this->getConnectionKey()
+                );
+            } else {
+                throw $e;
+            }
+        }
+
         return call_user_func_array($plugin, $arguments);
     }
 

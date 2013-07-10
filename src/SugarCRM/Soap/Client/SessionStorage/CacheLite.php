@@ -92,4 +92,18 @@ class CacheLite implements SessionStorage
 
         return $this;
     }
+
+    /**
+     * Unsets session ID for the specified connection
+     *
+     * @param string $connectionKey Connection key
+     *
+     * @return static
+     */
+    public function unsetSessionId($connectionKey)
+    {
+        $this->cache->remove($connectionKey);
+
+        return $this;
+    }
 }

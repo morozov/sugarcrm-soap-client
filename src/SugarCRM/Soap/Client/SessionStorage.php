@@ -44,4 +44,13 @@ interface SessionStorage
      * @return static
      */
     public function setSessionId($connectionKey, $sessionId);
+
+    /**
+     * Unsets session ID for the specified connection
+     *
+     * @param string $connectionKey Connection key
+     *
+     * @return static
+     */
+    public function unsetSessionId($connectionKey);
 }
