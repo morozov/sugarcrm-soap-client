@@ -110,6 +110,21 @@ class Client
     }
 
     /**
+     * Returns SugarCRM instance URL
+     *
+     * @return string
+     * @throws Exception
+     */
+    public function getUrl()
+    {
+        if (strcmp($this->url, '') == 0) {
+            $this->error('SugarCRM instance URL is not specified');
+        }
+
+        return $this->url;
+    }
+
+    /**
      * Sets SugarCRM instance URL
      *
      * @param string $url SugarCRM instance URL
@@ -208,16 +223,14 @@ class Client
     {
         if (!$this->soapClient instanceof SoapClient) {
 
-            if ('' == $this->url) {
-                $this->error('SugarCRM instance URL is not specified');
-            }
+            $url = $this->getUrl();
 
             // instantiate the soap client
             $this->soapClient = new SoapClient(
                 null,
                 array(
-                    'location' => $this->url . '/service/v3/soap.php',
-                    'uri'      => $this->url . '/',
+                    'location' => $url . '/service/v3/soap.php',
+                    'uri'      => $url . '/',
                     'trace'    => 1,
                 )
             );
