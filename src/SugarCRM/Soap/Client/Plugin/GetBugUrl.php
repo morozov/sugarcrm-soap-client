@@ -65,11 +65,7 @@ class GetBugUrl extends AbstractPlugin
             throw new \DomainException('Bug not found');
         }
 
-        $url = $this->getClient()->getUrl() . '/?' . http_build_query(array(
-            'module' => 'Bugs',
-            'action' => 'DetailView',
-            'record' => $bug['id'],
-        ));
+        $url = $this->getClient()->getUrl() . '/#Bugs/' . rawurlencode($bug['id']);
 
         return $url;
     }
